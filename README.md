@@ -1,0 +1,3 @@
+## OTUS algo course
+This repository contains completed tasks about algorithms from Otus company
+To be continued...
