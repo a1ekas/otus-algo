@@ -2,7 +2,8 @@ package cases
 
 // Case общий интерфейс для тестовых заданий
 type Case interface {
-	// LoadTestData
+	// LoadTestData ...
 	LoadTestData() error
+	// Check ...
 	Check() error
 }

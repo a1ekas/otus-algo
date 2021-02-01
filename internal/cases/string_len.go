@@ -17,7 +17,7 @@ type StringLenTestCase struct {
 // NewStringLenTestCase коструктор StringLenTestCase
 func NewStringLenTestCase() *StringLenTestCase {
 	c := StringLenTestCase{
-		testDataPath: reader.ProjectRoot + "/data/0.String",
+		testDataPath: "/data/0.String",
 		inputData:    make(map[int]string),
 		expectedData: make(map[int]int),
 	}

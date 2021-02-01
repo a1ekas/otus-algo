@@ -22,17 +22,11 @@ type InputDataType map[int]string
 // OutputDataType ...
 type OutputDataType map[int]string
 
-// ProjectRoot ...
-var ProjectRoot string
-
-func init() {
-	cwd, _ := os.Getwd()
-	ProjectRoot = cwd
-}
-
 // LoadTestData ...
 func LoadTestData(path string) (InputDataType, OutputDataType) {
-	f, err := os.Open(path)
+	projectRoot, _ := os.Getwd()
+	absPath := projectRoot + path
+	f, err := os.Open(absPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,20 +37,18 @@ func LoadTestData(path string) (InputDataType, OutputDataType) {
 		log.Fatal(err)
 	}
 
-	var filePath string
 	in := make(InputDataType)
 	out := make(OutputDataType)
 
 	for _, file := range filesInfo {
-		filePath = path + "/" + file.Name()
 		if matched, _ := regexp.MatchString(InputFileDataMask, file.Name()); matched {
 			tkey := extractTestKey(file.Name())
-			in[tkey] = readFile(filePath)
+			in[tkey] = readFile(absPath + "/" + file.Name())
 		}
 
 		if matched, _ := regexp.MatchString(OutputFileDataMask, file.Name()); matched {
 			tkey := extractTestKey(file.Name())
-			out[tkey] = readFile(filePath)
+			out[tkey] = readFile(absPath + "/" + file.Name())
 		}
 
 	}
