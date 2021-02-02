@@ -28,13 +28,13 @@ func LoadTestData(path string) (InputDataType, OutputDataType) {
 	absPath := projectRoot + path
 	f, err := os.Open(absPath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	defer f.Close()
 
 	filesInfo, err := f.Readdir(-1)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	in := make(InputDataType)
@@ -65,7 +65,7 @@ func extractTestKey(fileName string) int {
 func readFile(path string) string {
 	d, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	return string(d)

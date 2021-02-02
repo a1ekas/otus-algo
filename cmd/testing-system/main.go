@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/a1ekas/otus-algo/internal/cases"
 	"github.com/a1ekas/otus-algo/internal/runner"
+	"github.com/a1ekas/otus-algo/internal/tests"
 )
 
 func main() {
@@ -10,9 +10,9 @@ func main() {
 	runner.Run()
 }
 
-func initTestsTable() []cases.Case {
-	table := []cases.Case{
-		cases.NewStringLenTestCase(),
+func initTestsTable() []tests.Test {
+	table := []tests.Test{
+		tests.NewStringLenTest(),
 	}
 
 	return table
