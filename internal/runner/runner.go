@@ -18,7 +18,7 @@ func NewRunner(testsTable []tests.Test) *Runner {
 
 // Run метод запускает проверку тест кейсов
 func (r *Runner) Run() {
-	log.Println("Runner is ran...")
+	log.Println("Runner is running...")
 	for _, t := range r.tests {
 		t.Check()
 	}
