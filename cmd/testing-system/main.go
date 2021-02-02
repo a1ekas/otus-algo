@@ -13,6 +13,7 @@ func main() {
 func initTestsTable() []tests.Test {
 	table := []tests.Test{
 		tests.NewStringLenTest(),
+		tests.NewLuckyTicketsTest(),
 	}
 
 	return table

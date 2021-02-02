@@ -21,68 +21,64 @@ type StringLenTest struct {
 
 // NewStringLenTest коструктор StringLenTest
 func NewStringLenTest() *StringLenTest {
-	c := StringLenTest{
+	t := StringLenTest{
 		testName:     "StringLenTest",
 		testDataPath: "/data/0.String",
 		inputData:    make(map[int]string),
 		expectedData: make(map[int]int),
 		tcasesLen:    0,
 	}
-	c.LoadTestData()
-	return &c
+	t.LoadTestData()
+	return &t
 }
 
 // LoadTestData - имплементация интерфейса Test
-func (c *StringLenTest) LoadTestData() {
-	in, out := reader.LoadTestData(c.testDataPath)
+func (t *StringLenTest) LoadTestData() {
+	in, out := reader.LoadTestData(t.testDataPath)
 	inLen, outLen := len(in), len(out)
 	if inLen != outLen || inLen == 0 || outLen == 0 {
 		log.Fatalln("Something went wrong. Please check data directory. It should contains data files.")
 	}
 
 	for i, tdata := range in {
-		c.inputData[i] = tdata
+		t.inputData[i] = tdata
 	}
 
 	for j, expData := range out {
 		edata, _ := strconv.Atoi(expData)
-		c.expectedData[j] = edata
+		t.expectedData[j] = edata
 	}
 }
 
 // Check - имплементация интерфейса Test
-func (c *StringLenTest) Check() {
-	tcaseCh := make(chan Case, len(c.inputData))
-	log.Println(c.testName + " started asynchronously.")
+func (t *StringLenTest) Check() {
+	tcaseCh := make(chan Case, len(t.inputData))
+	log.Println(t.testName + " started asynchronously.")
+
 	var wg sync.WaitGroup
-	for i := 0; i < len(c.inputData); i++ {
+	// Асинхронно запускаем каждый тест в своей горутине
+	for i := 0; i < len(t.inputData); i++ {
 		wg.Add(1)
-		go runCase(
+		go func(wg *sync.WaitGroup, tcase Case, tcaseCh chan Case) {
+			tcase.Status = len(strings.TrimSpace(tcase.InData.(string))) == tcase.ExpectedData.(int)
+			tcaseCh <- tcase
+			wg.Done()
+		}(
 			&wg,
-			Case{ID: i, InData: c.inputData[i], ExpectedData: c.expectedData[i]},
+			Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
 			tcaseCh,
 		)
 	}
 	wg.Wait()
 	close(tcaseCh)
-
+	// Проверяем результат тестов и выводим результат
 	for tcase := range tcaseCh {
 		if tcase.Status {
-			log.Println(c.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
+			log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
 		} else {
-			log.Println(c.testName + ": case " + fmt.Sprint(tcase.ID) + " failed.")
+			log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " failed.")
 		}
 	}
 
-	log.Println(c.testName + " completed.")
-}
-
-func runCase(wg *sync.WaitGroup, tcase Case, tcaseCh chan Case) {
-	if len(strings.TrimSpace(tcase.InData.(string))) == tcase.ExpectedData.(int) {
-		tcase.Status = true
-	} else {
-		tcase.Status = false
-	}
-	tcaseCh <- tcase
-	wg.Done()
+	log.Println(t.testName + " completed.")
 }
