@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/a1ekas/otus-algo/internal/reader"
@@ -52,7 +53,7 @@ func (c *StringLenTest) LoadTestData() {
 // Check - имплементация интерфейса Test
 func (c *StringLenTest) Check() {
 	tcaseCh := make(chan Case, len(c.inputData))
-	log.Println(c.testName + " started.")
+	log.Println(c.testName + " started asynchronously.")
 	var wg sync.WaitGroup
 	for i := 0; i < len(c.inputData); i++ {
 		wg.Add(1)
@@ -77,7 +78,7 @@ func (c *StringLenTest) Check() {
 }
 
 func runCase(wg *sync.WaitGroup, tcase Case, tcaseCh chan Case) {
-	if len(tcase.InData.(string)) == tcase.ExpectedData.(int) {
+	if len(strings.TrimSpace(tcase.InData.(string))) == tcase.ExpectedData.(int) {
 		tcase.Status = true
 	} else {
 		tcase.Status = false
