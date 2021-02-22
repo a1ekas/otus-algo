@@ -10,10 +10,11 @@ func main() {
 	runner.Run()
 }
 
+// Uncomment any test, make build and run it
 func initTestsTable() []tests.Test {
 	table := []tests.Test{
-		tests.NewStringLenTest(),
-		tests.NewLuckyTicketsTest(),
+		// tests.NewStringLenTest(),
+		// tests.NewLuckyTicketsTest(),
 	}
 
 	return table
