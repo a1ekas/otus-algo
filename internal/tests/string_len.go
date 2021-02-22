@@ -52,33 +52,24 @@ func (t *StringLenTest) LoadTestData() {
 
 // Check - имплементация интерфейса Test
 func (t *StringLenTest) Check() {
-	tcaseCh := make(chan Case, len(t.inputData))
 	log.Println(t.testName + " started asynchronously.")
 
 	var wg sync.WaitGroup
 	// Асинхронно запускаем каждый тест в своей горутине
 	for i := 0; i < len(t.inputData); i++ {
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, tcase Case, tcaseCh chan Case) {
-			tcase.Status = len(strings.TrimSpace(tcase.InData.(string))) == tcase.ExpectedData.(int)
-			tcaseCh <- tcase
+		go func(wg *sync.WaitGroup, tcase Case) {
+			if len(strings.TrimSpace(tcase.InData.(string))) == tcase.ExpectedData.(int) {
+				log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
+			} else {
+				log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " failed.")
+			}
 			wg.Done()
 		}(
 			&wg,
 			Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
-			tcaseCh,
 		)
 	}
 	wg.Wait()
-	close(tcaseCh)
-	// Проверяем результат тестов и выводим результат
-	for tcase := range tcaseCh {
-		if tcase.Status {
-			log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
-		} else {
-			log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " failed.")
-		}
-	}
-
 	log.Println(t.testName + " completed.")
 }

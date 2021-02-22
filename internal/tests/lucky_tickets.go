@@ -54,36 +54,29 @@ func (t *LuckyTicketsTest) LoadTestData() {
 
 // Check - имплементация интерфейса Test
 func (t *LuckyTicketsTest) Check() {
-	tcaseCh := make(chan Case, len(t.inputData))
 	log.Println(t.testName + " started asynchronously.")
 
 	var wg sync.WaitGroup
 	// Асинхронно запускаем каждый тест в своей горутине
 	for i := 0; i < len(t.inputData); i++ {
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, tcase Case, tcaseCh chan Case) {
+		go func(wg *sync.WaitGroup, tcase Case) {
 			a := lkytkts.NewLuckyTicketsAlgo(tcase.InData.(int))
 			res := a.Count()
 			expD := tcase.ExpectedData.(int64)
 			tcase.Status = res == expD
-			tcaseCh <- tcase
+			if res == expD {
+				log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
+			} else {
+				log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " failed.")
+			}
 			wg.Done()
 		}(
 			&wg,
 			Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
-			tcaseCh,
 		)
 	}
 	wg.Wait()
-	close(tcaseCh)
-	// Проверяем результат тестов и выводим результат
-	for tcase := range tcaseCh {
-		if tcase.Status {
-			log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
-		} else {
-			log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " failed.")
-		}
-	}
 
 	log.Println(t.testName + " completed.")
 }
