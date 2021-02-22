@@ -14,7 +14,7 @@ func main() {
 func initTestsTable() []tests.Test {
 	table := []tests.Test{
 		// tests.NewStringLenTest(),
-		// tests.NewLuckyTicketsTest(),
+		tests.NewLuckyTicketsTest(),
 	}
 
 	return table
