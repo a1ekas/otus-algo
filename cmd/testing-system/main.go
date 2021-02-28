@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/a1ekas/otus-algo/internal/runner"
 	"github.com/a1ekas/otus-algo/internal/tests"
-	// "github.com/a1ekas/otus-algo/internal/tests"
+	// luckytickets "github.com/a1ekas/otus-algo/internal/tests/luckytikets"
 	// "github.com/a1ekas/otus-algo/internal/tests/strlen"
 )
 
@@ -16,7 +16,7 @@ func main() {
 func initTestsTable() []tests.Test {
 	table := []tests.Test{
 		// strlen.NewStringLenTest(),
-		// tests.NewLuckyTicketsTest(),
+		// luckytickets.NewLuckyTicketsTest(),
 	}
 
 	return table
