@@ -1,4 +1,4 @@
-package tests
+package luckytickets
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/a1ekas/otus-algo/internal/reader"
-	"github.com/a1ekas/otus-algo/internal/tests/lkytkts"
+	"github.com/a1ekas/otus-algo/internal/tests"
 )
 
 // LuckyTicketsTest ...
@@ -60,9 +60,9 @@ func (t *LuckyTicketsTest) Check() {
 	// Асинхронно запускаем каждый тест в своей горутине
 	for i := 0; i < len(t.inputData); i++ {
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, tcase Case) {
-			a := lkytkts.NewLuckyTicketsAlgo(tcase.InData.(int))
-			res := a.Count()
+		go func(wg *sync.WaitGroup, tcase tests.Case) {
+			algo := newLuckyTicketsAlgo(tcase.InData.(int))
+			res := algo.count()
 			expD := tcase.ExpectedData.(int64)
 			tcase.Status = res == expD
 			if res == expD {
@@ -73,7 +73,7 @@ func (t *LuckyTicketsTest) Check() {
 			wg.Done()
 		}(
 			&wg,
-			Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
+			tests.Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
 		)
 	}
 	wg.Wait()
