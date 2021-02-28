@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/a1ekas/otus-algo/internal/runner"
 	"github.com/a1ekas/otus-algo/internal/tests"
+	// "github.com/a1ekas/otus-algo/internal/tests/strlen"
 )
 
 func main() {

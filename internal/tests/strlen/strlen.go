@@ -1,4 +1,4 @@
-package tests
+package strlen
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/a1ekas/otus-algo/internal/reader"
+	"github.com/a1ekas/otus-algo/internal/tests"
 )
 
 // StringLenTest - структура для проверки длин строк и системы тестирования
@@ -58,7 +59,7 @@ func (t *StringLenTest) Check() {
 	// Асинхронно запускаем каждый тест в своей горутине
 	for i := 0; i < len(t.inputData); i++ {
 		wg.Add(1)
-		go func(wg *sync.WaitGroup, tcase Case) {
+		go func(wg *sync.WaitGroup, tcase tests.Case) {
 			if len(strings.TrimSpace(tcase.InData.(string))) == tcase.ExpectedData.(int) {
 				log.Println(t.testName + ": case " + fmt.Sprint(tcase.ID) + " passed.")
 			} else {
@@ -67,7 +68,7 @@ func (t *StringLenTest) Check() {
 			wg.Done()
 		}(
 			&wg,
-			Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
+			tests.Case{ID: i, InData: t.inputData[i], ExpectedData: t.expectedData[i]},
 		)
 	}
 	wg.Wait()
